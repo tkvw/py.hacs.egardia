@@ -1,0 +1,10 @@
+{
+  "domain": "tkvw_egardia",
+  "name": "Egardia",
+  "documentation": "https://github.com/tkvw/py.hacs.egardia",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": [
+    "@tkvw"
+  ]
+}

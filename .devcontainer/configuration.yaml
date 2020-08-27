@@ -1,0 +1,12 @@
+default_config:
+
+logger:
+  default: error
+  logs:
+    custom_components.tkvw_egardia: debug
+
+tkvw_egardia:
+  name: Woonveilig
+  hostname: !secret tkvw_egardia_hostname
+  username: !secret tkvw_egardia_username
+  password: !secret tkvw_egardia_password
