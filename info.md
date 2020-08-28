@@ -15,17 +15,23 @@ _Component to integrate with [blueprint][blueprint]._
 
 Platform | Description
 -- | --
-`binary_sensor` | Show something `True` or `False`.
-`sensor` | Show info from blueprint API.
-`switch` | Switch something `True` or `False`.
+`alarm_control_panel` | Switch and sensor for alarm mode in one, supports Armed, Disarmed, ArmedHome and Triggered.
 
 ![example][exampleimg]
 
 {% if not installed %}
 ## Installation
 
-1. Click install.
-1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Blueprint".
+1. Click install to add the component to Hacs (it will be available in `/config/custom_components/tkvw_egardia`)
+2. add the following configuration to `configuration.yaml`
+
+```yaml
+tkvw_egardia:
+  name: Woonveilig      # A free name of your choosing, a alarm_control_panel entity will be created with entityid alarm_control_panel.<name>
+  hostname: !secret tkvw_egardia_hostname # The ip adress of your egardia device
+  username: !secret tkvw_egardia_username # The username used to login to the woonveilig webportal
+  password: !secret tkvw_egardia_password # The password used to login to the woonveilig webportal
+```
 
 {% endif %}
 
