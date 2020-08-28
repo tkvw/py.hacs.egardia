@@ -1,5 +1,5 @@
 {
-    "name": "Blueprint",
+    "name": "Egardia / Woonveilig GATE-03",
     "hacs": "0.24.0",
     "domains": [
         "binary_sensor",
