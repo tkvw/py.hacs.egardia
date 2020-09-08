@@ -9,6 +9,9 @@ class Mode(Enum):
     Armed = 1
     ArmedHome = 2
     Triggered = 10
+    TriggeredPanic = 20
+    DisarmedPanic = 21
+    Unset = 99
 
 
 class BatteryLevel(Enum):
@@ -75,6 +78,7 @@ class Gate03(EgardiaGateway):
         "Full Arm": Mode.Armed,
         "Disarm": Mode.Disarmed,
         "Home Arm 1": Mode.ArmedHome,
+        "Unset": Mode.Unset,
     }
 
     def __init__(self):
@@ -91,12 +95,17 @@ class Gate03(EgardiaGateway):
         return {"mode": mode, "battery": BatteryLevel.Ok}
 
     def transform_event(self, record):
-        mode = Gate03.STATUS[record.get("mode")]
+        mode = Mode.Unset
+        if record.get('mode'):
+            mode = Gate03.STATUS[record.get("mode")]
         msg = record.get("msg")
+
         if "Burglar Alarm".casefold() == msg.casefold():
             mode = Mode.Triggered
         elif "Panic Alarm".casefold() == msg.casefold():
-            mode = Mode.Triggered
+            mode = Mode.TriggeredPanic
+        elif "Disarm Self Panic".casefold() == msg.casefold():
+            mode = Mode.DisarmedPanic
 
         return {"mode": mode, "msg": msg}
 
@@ -105,7 +114,7 @@ class Gate03(EgardiaGateway):
         rows = [
             event
             for event in data.get("logrows", [])
-            if event.get("")
+            if event.get("mode") is not None or event.get("msg") == "Disarm Self Panic"
         ]
         return list(map(self.transform_event, rows))
 

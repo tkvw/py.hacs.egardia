@@ -47,6 +47,7 @@ class EgardiaAlarm(alarm.AlarmControlPanelEntity):
         Mode.ArmedHome: STATE_ALARM_ARMED_HOME,
         Mode.Disarmed: STATE_ALARM_DISARMED,
         Mode.Triggered: STATE_ALARM_TRIGGERED,
+        Mode.TriggeredPanic: STATE_ALARM_TRIGGERED,
     }
 
     def __init__(self, name, coordinator):
@@ -71,13 +72,20 @@ class EgardiaAlarm(alarm.AlarmControlPanelEntity):
         """Return the state of the device."""
 
         events = self._coordinator.data.get("events")
+        status = self._coordinator.data.get("status")
 
         if events is not None and len(events) > 0:
             event = events[0]
             egardia_mode = event.get("mode")
         else:
-            status = self._coordinator.data.get("status")
             egardia_mode = status.get("mode")
+
+        # From the event log we can receive a disarmedpanic mode. This
+        # is not a valid HomeAssistant mode, restore the previous state
+        if egardia_mode == Mode.DisarmedPanic:
+            egardia_mode = status.get(
+                "mode"
+            )  # The actual state is still available in the status
 
         return EgardiaAlarm.STATES.get(egardia_mode)
 
